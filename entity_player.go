@@ -265,7 +265,7 @@ func (p *EntityPlayer) setTime(time int) *EntityPlayer {
 	return p
 }
 
-func (p *EntityPlayer) setScale(scale float64) *EntityPlayer {
+func (p *EntityPlayer) SetScale(scale float64) *EntityPlayer {
 	p.root.Scale[0] = scale * float64(p.flippedX())
 	p.root.Scale[1] = scale * float64(p.flippedY())
 	return p
@@ -299,7 +299,7 @@ func (p *EntityPlayer) flippedY() int {
 	return int(signum(p.root.Scale.Y()))
 }
 
-func (p *EntityPlayer) setPosition(x float64, y float64) *EntityPlayer {
+func (p *EntityPlayer) SetPosition(x float64, y float64) *EntityPlayer {
 	p.rootIsDirty = true
 	p.position.SetCoords(x, y)
 	return p

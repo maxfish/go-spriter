@@ -19,6 +19,9 @@ type EntityPlayer struct {
 	entity    *Entity
 	animation *Animation
 	time      int
+	scale     float64
+	flipX     bool
+	flipY     bool
 
 	interpolatedKeys             []*TimelineKey
 	unmappedInterpolatedKeys     []*TimelineKey
@@ -100,6 +103,14 @@ func (p *EntityPlayer) increaseTime(millisecs int) {
 
 func (p *EntityPlayer) updateRoot() {
 	p.root.Angle = p.angle
+	p.root.Scale[0] = p.scale
+	if p.flipX {
+		p.root.Scale[0] *= -1
+	}
+	p.root.Scale[1] = p.scale
+	if p.flipY {
+		p.root.Scale[1] *= -1
+	}
 	position := MakePoint(p.pivot.X(), p.pivot.Y())
 	position.Rotate(p.angle)
 	position.Add(p.position)
@@ -266,37 +277,44 @@ func (p *EntityPlayer) setTime(time int) *EntityPlayer {
 }
 
 func (p *EntityPlayer) SetScale(scale float64) *EntityPlayer {
-	p.root.Scale[0] = scale * float64(p.flippedX())
-	p.root.Scale[1] = scale * float64(p.flippedY())
+	if p.scale != scale {
+		p.scale = scale
+		p.rootIsDirty = true
+	}
 	return p
 }
 
 func (p *EntityPlayer) SetFlip(x bool, y bool) *EntityPlayer {
-	if x {
-		p.SetFlipX()
+	if p.flipX != x || p.flipY != y {
+		p.flipX = x
+		p.flipY = y
+		p.rootIsDirty = true
 	}
-	if y {
-		p.SetFlipY()
+	return p
+}
+
+func (p *EntityPlayer) SetFlipX(flip bool) *EntityPlayer {
+	if p.flipX != flip {
+		p.flipX = flip
+		p.rootIsDirty = true
 	}
 	return p
 }
 
-func (p *EntityPlayer) SetFlipX() *EntityPlayer {
-	p.root.Scale[0] *= -1
+func (p *EntityPlayer) SetFlipY(flip bool) *EntityPlayer {
+	if p.flipY != flip {
+		p.flipY = flip
+		p.rootIsDirty = true
+	}
 	return p
 }
 
-func (p *EntityPlayer) SetFlipY() *EntityPlayer {
-	p.root.Scale[1] *= -1
-	return p
+func (p *EntityPlayer) FlippedX() bool {
+	return p.flipX
 }
 
-func (p *EntityPlayer) flippedX() int {
-	return int(signum(p.root.Scale.X()))
-}
-
-func (p *EntityPlayer) flippedY() int {
-	return int(signum(p.root.Scale.Y()))
+func (p *EntityPlayer) FlippedY() bool {
+	return p.flipX
 }
 
 func (p *EntityPlayer) SetPosition(x float64, y float64) *EntityPlayer {

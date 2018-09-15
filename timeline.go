@@ -6,6 +6,7 @@ type Timeline struct {
 	Id         int            `xml:"id,attr"`
 	Name       string         `xml:"name,attr"`
 	Keys       []*TimelineKey `xml:"key"`
+	ObjectType ObjectType     `xml:"object_type,attr"`
 	objectInfo *ObjectInfo
 }
 

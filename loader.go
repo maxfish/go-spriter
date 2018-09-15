@@ -69,7 +69,7 @@ func initializeData(data *Model) {
 
 			// Updates the max number of timelines for the entity
 			if len(a.Timelines) > entity.MaxNumTimelines {
-				entity.MaxNumTimelines = len(a.Timelines) 
+				entity.MaxNumTimelines = len(a.Timelines)
 			}
 
 			// Mainline
@@ -103,7 +103,10 @@ func initializeData(data *Model) {
 					o = MakeObjectInfo(timeline.Name, TypeSprite, 0, 0)
 				}
 				timeline.objectInfo = o
-				timeline.objectInfo.Type = TypeSprite
+				if timeline.ObjectType == "" {
+					timeline.ObjectType = TypeSprite
+				}
+				timeline.objectInfo.Type = timeline.ObjectType
 
 				for z := range timeline.Keys {
 					key := timeline.Keys[z]
@@ -113,16 +116,18 @@ func initializeData(data *Model) {
 					key.Spin = optionalInt(key.XMLSpin, 1)
 
 					if key.XMLDataBone != nil {
+						// This is a bone
 						key.object = key.XMLDataBone
-						key.object.objectType = "bone"
+						key.object.objectType = TypeBone
 						key.object.Pivot = MakePoint(
 							optionalFloat(key.object.XMLPivotX, 0),
 							optionalFloat(key.object.XMLPivotY, 0.5),
 						)
 						key.XMLDataBone = nil
 					} else {
+						// This could be a Sprite, a Point or a Box
 						key.object = key.XMLDataObject
-						key.object.objectType = "object"
+						key.object.objectType = timeline.ObjectType
 						o := key.object
 						o.fileIndex = FolderAndFileToFileIndex(o.Folder, o.File)
 						f := data.Files[o.fileIndex]

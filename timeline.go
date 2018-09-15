@@ -113,6 +113,12 @@ func (b *TimelineKeyObject) setWithBone(bone *TimelineKeyObject) {
 	b.fileIndex = bone.fileIndex
 }
 
+func (b *TimelineKeyObject) set(x float64, y float64, angle float64, scaleX float64, scaleY float64) {
+	b.Position.Set(&Point{x, y})
+	b.Scale.Set(&Point{scaleX, scaleY})
+	b.Angle = angle
+}
+
 func (b *TimelineKeyObject) unmapCoordinates(parent *TimelineKeyObject) {
 	signScaleX := signum(parent.Scale.X())
 	signScaleY := signum(parent.Scale.Y())

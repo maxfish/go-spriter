@@ -375,3 +375,25 @@ func (p *EntityPlayer) GetMappedFileIndexForKeyObject(object *TimelineKeyObject)
 	}
 	return fileIndex
 }
+
+func (p *EntityPlayer) SetBone(name string, x float64, y float64, angle float64, scaleX float64, scaleY float64) {
+	index := p.getBoneIndex(name)
+	if index == -1 {
+		return
+	}
+	ref := p.currentKey.BoneRefs[index]
+	bone := p.getBone(index)
+	bone.set(x, y, angle, scaleX, scaleY)
+	p.unmapObjects(ref)
+}
+
+func (p *EntityPlayer) SetBoneAngle(name string, angle float64) {
+	index := p.getBoneIndex(name)
+	if index == -1 {
+		return
+	}
+	ref := p.currentKey.BoneRefs[index]
+	bone := p.getBone(index)
+	bone.Angle = angle
+	p.unmapObjects(ref)
+}
